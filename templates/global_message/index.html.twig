@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GlobalMessage index{% endblock %}
+
+{% block body %}
+    <h1>GlobalMessage index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Message</th>
+                <th>SendAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for global_message in global_messages %}
+            <tr>
+                <td>{{ global_message.id }}</td>
+                <td>{{ global_message.message }}</td>
+                <td>{{ global_message.sendAt ? global_message.sendAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_global_message_show', {'id': global_message.id}) }}">show</a>
+                    <a href="{{ path('app_global_message_edit', {'id': global_message.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_global_message_new') }}">Create new</a>
+{% endblock %}

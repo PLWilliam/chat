@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PrivateMessageController!{% endblock %}
+
+{% block body %}
+    <h1>Message privée : </h1>
+    {# {{dump(actualUser)}}
+    {{dump(otherUser)}} #}
+
+    {% for message in listMessage %}
+        {# {{dump(message)}} #}
+        {% if message.user1_id == actualUser.id %}
+            <p>
+                DE : {{ actualUser.name}}
+                VERS : {{ otherUser.name }}
+                {{message.message}}
+            </p>
+        {% else %}
+            <p>
+                DE : {{ otherUser.name }}
+                VERS : {{ actualUser.name}}
+                {{message.message}}
+            </p>
+        {% endif %}
+        
+    {% endfor %}
+
+{{ include('private_message/_form.html.twig') }}
+{% endblock %}
