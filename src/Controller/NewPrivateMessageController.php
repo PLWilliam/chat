@@ -23,13 +23,14 @@ class NewPrivateMessageController extends AbstractController
         $actualUser = $this->getUser();
         
         $query = $friendsRepository->createQueryBuilder('f')
-        ->join('f.friend2', 'u2')
-        ->join('f.friend1', 'u1')
+        ->join('f.friendsRequest', 'r')
         ->where('f.friend1 = :uid')
         ->orWhere('f.friend2 = :fid')
         ->andWhere('f.privateMessage is NULL')
+        ->andWhere('r.status = :rid')
         ->setParameter('uid', $actualUser)
         ->setParameter('fid', $actualUser)
+        ->setParameter('rid', 'Accepted')
         ->getQuery()
         ->getResult();
 

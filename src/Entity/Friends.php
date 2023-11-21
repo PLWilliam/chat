@@ -24,6 +24,10 @@ class Friends
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $privateMessage = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FriendRequestStatus $friendsRequest = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +65,18 @@ class Friends
     public function setPrivateMessage(?string $privateMessage): static
     {
         $this->privateMessage = $privateMessage;
+
+        return $this;
+    }
+
+    public function getFriendsRequest(): ?FriendRequestStatus
+    {
+        return $this->friendsRequest;
+    }
+
+    public function setFriendsRequest(?FriendRequestStatus $friendsRequest): static
+    {
+        $this->friendsRequest = $friendsRequest;
 
         return $this;
     }

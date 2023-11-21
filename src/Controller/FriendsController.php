@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Friends;
 use App\Form\FriendsType;
+use App\Repository\FriendRequestStatusRepository;
 use App\Repository\UserRepository;
 use App\Repository\FriendsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +26,7 @@ class FriendsController extends AbstractController
     }
 
     #[Route('/new', name: 'app_friends_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,UserRepository $userRepository, FriendsRepository $friendsRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,UserRepository $userRepository, FriendsRepository $friendsRepository, FriendRequestStatusRepository $friendRequestStatusRepository): Response
     {
         $friend = new Friends();
 
@@ -52,10 +53,14 @@ class FriendsController extends AbstractController
                 $otherMail = $user->getEmail();
                 if($data == $otherMail && $canBeAdded){
                     $friend->setFriend2($user);  
+                    $friend->setFriendsRequest($friendRequestStatusRepository->findOneBy(['status'=>'Waiting']));  
                     $entityManager->persist($friend);
                     $entityManager->flush(); 
                 }        
             }
+
+
+
 
             return $this->redirectToRoute('app_friends_index', [], Response::HTTP_SEE_OTHER);
         }

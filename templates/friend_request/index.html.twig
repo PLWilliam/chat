@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FriendRequestController!{% endblock %}
+
+{% block body %}
+    <h1>List Friend Request</h1>
+
+    {% for request in requestList %}
+        {{request.friend2.name}}
+    {% endfor %}
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Friend2</th>
+                <th>Status</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for request in requestList %}
+            <tr>
+                <td>{{ request.friend2.name }}</td>
+                <td>{{ request.friendsRequest.status }}</td>
+                <td>
+                    {# <a href="{{ path('app_friends_show', {'id': friend.id}) }}">Accept</a>
+                    <a href="{{ path('app_friends_edit', {'id': friend.id}) }}">Deny</a> #}
+                    {{ include('friend_request/_accept_form.html.twig') }}
+                    {{ include('friend_request/_deny_form.html.twig') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock %}

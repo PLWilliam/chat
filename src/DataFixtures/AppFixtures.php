@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\FriendRequestStatus;
+use App\Entity\Friends;
 use App\Entity\User;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -26,10 +28,20 @@ class AppFixtures extends Fixture
             $user->setEmail('m@'.$i);
             $hashedPassword = $this->passwordEncoder->hashPassword($user, $i);
             $user->setPassword($hashedPassword);
+            $user->setName('m'.$i);
 
             $manager->persist($user);
         }
 
+        $status = ['Waiting','Accepted','Denied'];
+
+        foreach ($status as $key => $value) {
+            $status = new FriendRequestStatus();
+            $status->setStatus($value);
+            $manager->persist($status);
+        }
+        
         $manager->flush();
+
     }
 }
