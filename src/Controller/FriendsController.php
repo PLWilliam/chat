@@ -28,6 +28,7 @@ class FriendsController extends AbstractController
     #[Route('/new', name: 'app_friends_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager,UserRepository $userRepository, FriendsRepository $friendsRepository, FriendRequestStatusRepository $friendRequestStatusRepository): Response
     {
+        $actualUser = $this->getUser();
         $friend = new Friends();
 
         $form = $this->createForm(TextType::class);
@@ -42,9 +43,17 @@ class FriendsController extends AbstractController
 
             $canBeAdded = true;
 
-            $listActualFriend = $friendsRepository->findBy(['friend1'=>$actualUser]);
+            $listActualFriend = $friendsRepository->getFriendsList($actualUser);
+
+            dd($listActualFriend);
+
+            // $listActualFriend = $friendsRepository->findBy(['friend1'=>$actualUser]);
+            // dd($listActualFriend);
             foreach ($listActualFriend as $key => $value) {
-                if($data == $value->getFriend2()->getEmail() && $data == $value->getFriend1()->getEmail()){
+                $friend1 = $value->getFriend1()->getEmail();
+                $friend2 = $value->getFriend2()->getEmail();
+                // dd($value->getFriend2()->getEmail());
+                if(($data == $friend1 && $actualUser->getEmail() == $friend2)||($data == $friend2 && $actualUser->getEmail() == $friend1)||($data == $actualUser->getEmail())){
                     $canBeAdded = false;
                 }
             }

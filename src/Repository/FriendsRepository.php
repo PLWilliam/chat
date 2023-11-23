@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Friends;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Friends>
@@ -19,6 +20,41 @@ class FriendsRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Friends::class);
+    }
+
+    public function getFriendsList(User $user){
+        return $this->createQueryBuilder('f')
+            ->where('f.friend1 = :uid')
+            ->orWhere('f.friend2 = :fid')
+            ->setParameter('uid', $user)
+            ->setParameter('fid', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getFriendsListAccepted(User $user){
+        return $this->createQueryBuilder('f')
+            ->join('f.friendsRequest', 'r')
+            ->where('f.friend1 = :uid')
+            ->orWhere('f.friend2 = :fid')
+            ->andWhere('f.privateMessage is NULL')
+            ->andWhere('r.status = :rid')
+            ->setParameter('uid', $user)
+            ->setParameter('fid', $user)
+            ->setParameter('rid', 'Accepted')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getFriendsListMP(User $user){
+        return $this->createQueryBuilder('f')
+            ->where('f.friend1 = :uid')
+            ->orWhere('f.friend2 = :fid')
+            ->andWhere('f.privateMessage is not NULL')
+            ->setParameter('uid', $user)
+            ->setParameter('fid', $user)
+            ->getQuery()
+            ->getResult();
     }
 
     // public function checkIfFriendCanBeAdded($friend1,$friend2)

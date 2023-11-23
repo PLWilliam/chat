@@ -17,14 +17,7 @@ class MyPrivateMessageController extends AbstractController
     {
         $actualUser = $this->getUser();
 
-        $query = $friendsRepository->createQueryBuilder('f')
-        ->where('f.friend1 = :uid')
-        ->orWhere('f.friend2 = :fid')
-        ->andWhere('f.privateMessage is not NULL')
-        ->setParameter('uid', $actualUser)
-        ->setParameter('fid', $actualUser)
-        ->getQuery()
-        ->getResult();
+        $query = $friendsRepository->getFriendsListMP($actualUser);
 
         // dd($query);
 
@@ -60,7 +53,8 @@ class MyPrivateMessageController extends AbstractController
 
 
         return $this->render('my_private_message/index.html.twig', [
-            'form' => $form
+            'form' => $form,
+            'MPList' => $MPList
         ]);
     }
 }

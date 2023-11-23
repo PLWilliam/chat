@@ -22,17 +22,7 @@ class NewPrivateMessageController extends AbstractController
     {
         $actualUser = $this->getUser();
         
-        $query = $friendsRepository->createQueryBuilder('f')
-        ->join('f.friendsRequest', 'r')
-        ->where('f.friend1 = :uid')
-        ->orWhere('f.friend2 = :fid')
-        ->andWhere('f.privateMessage is NULL')
-        ->andWhere('r.status = :rid')
-        ->setParameter('uid', $actualUser)
-        ->setParameter('fid', $actualUser)
-        ->setParameter('rid', 'Accepted')
-        ->getQuery()
-        ->getResult();
+        $query = $friendsRepository->getFriendsListAccepted($actualUser);
 
         // dd($query);
 
@@ -59,7 +49,9 @@ class NewPrivateMessageController extends AbstractController
             $tableName = '_'.$actualUser->getName().$friendName;
             // dd($tableName);
 
-            $tableList = $entityManager->getConnection()->getSchemaManager()->listTables();
+            $schemaManager = $entityManager->getConnection()->createSchemaManager();
+            $tableList = $schemaManager->listTables();
+            
             $tableExist = false;
 
             foreach ($tableList as $key => $value) {
@@ -99,7 +91,8 @@ class NewPrivateMessageController extends AbstractController
 
 
         return $this->render('new_private_message/index.html.twig', [
-            'form' => $form
+            'form' => $form,
+            'friendList' => $friendList,
         ]);
     }
 }
